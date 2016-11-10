@@ -1,4 +1,4 @@
-class FileDetailsController < ApplicationController
+class Api::FileDetailsController < ApplicationController
 
   def index
     @file_details = FileDetail.all
@@ -8,9 +8,12 @@ class FileDetailsController < ApplicationController
 
   def create
     @file_detail = FileDetail.new(file_detail_params)
+    @file_detail.parse_file
+    @file_detail.omit_blues if params[:no_blues]
+    @file_detail.check_spellings if params[:spell_check]
 
     if @file_detail.save
-      render json: @file_detail, status: :created, location: @file_detail
+      render json: @file_detail, no_blues: params[:no_blues], spell_check: params[:spell_check]
     else
       render json: @file_detail.errors, status: :unprocessable_entity
     end
