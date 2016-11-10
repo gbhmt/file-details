@@ -3,7 +3,7 @@ class FileDetailSerializer < ActiveModel::Serializer
   attribute :spell_check_results, if: :spell_check?
 
   def total_word_count
-    if instance_options[:no_blues]
+    if instance_options[:no_blues] == 'true'
       object.no_blues_total_word_count
     else
       object.total_word_count
@@ -11,7 +11,7 @@ class FileDetailSerializer < ActiveModel::Serializer
   end
 
   def word_count_map
-    if instance_options[:no_blues]
+    if instance_options[:no_blues] == 'true'
       object.no_blues_word_count_map
     else
       object.word_count_map
@@ -19,7 +19,7 @@ class FileDetailSerializer < ActiveModel::Serializer
   end
 
   def spell_check?
-    instance_options[:spell_check]
+    instance_options[:spell_check] == 'true'
   end
 
 end
