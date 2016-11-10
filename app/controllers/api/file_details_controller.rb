@@ -1,4 +1,5 @@
 class Api::FileDetailsController < ApplicationController
+  rescue_from StandardError, with: :invalid_file_message
 
   def index
     @file_details = FileDetail.all
@@ -21,6 +22,10 @@ class Api::FileDetailsController < ApplicationController
 
   private
     def file_detail_params
-      params.require(:file_detail).permit(:file, :no_blues, :spell_check)
+      params.require(:file_detail).permit(:file)
+    end
+
+    def invalid_file_message
+      render json: [message: "Invalid file type", status: 422]
     end
 end

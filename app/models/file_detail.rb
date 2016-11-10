@@ -24,12 +24,13 @@ class FileDetail < ApplicationRecord
   end
 
   def omit_blues
-    self.no_blues_word_count_map = word_count_map.reject { |word, _ | word.include?("blue") }
+    self.no_blues_word_count_map = word_count_map.reject { |word, _| word.include?("blue") }
     self.no_blues_total_word_count = no_blues_word_count_map.values.inject(:+)
   end
 
   def parse_file
-    file_contents_array = file.read.split
+    raise StandardError if file.content_type != "text/plain"
+    file_contents_array = file.read.gsub(/[^a-zA-Z\s-]/, '').split
     self.total_word_count = file_contents_array.count
     self.word_count_map = map_word_counts(file_contents_array)
   end
