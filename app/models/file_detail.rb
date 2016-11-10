@@ -10,11 +10,12 @@
 #
 
 class FileDetail < ApplicationRecord
-  validates :total_word_count, :word_count_map, presence: true
-
+  validate :correct_file_type
   serialize :word_count_map
 
   attr_accessor :file, :no_blues_word_count_map, :no_blues_total_word_count, :spell_check_results
+
+  before_create :parse_file
 
   def check_spellings
     response = HTTParty.post('https://api.cognitive.microsoft.com/bing/v5.0/spellcheck/',
@@ -28,8 +29,15 @@ class FileDetail < ApplicationRecord
     self.no_blues_total_word_count = no_blues_word_count_map.values.inject(:+)
   end
 
+  private
+
+  def correct_file_type
+    if file.content_type != "text/plain"
+      errors[:file] << "must be a plain text file"
+    end
+  end
+
   def parse_file
-    raise StandardError if file.content_type != "text/plain"
     file_contents_array = file.read.gsub(/[^a-zA-Z\s-]/, '').split
     self.total_word_count = file_contents_array.count
     self.word_count_map = map_word_counts(file_contents_array)
