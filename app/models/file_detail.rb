@@ -12,10 +12,9 @@
 class FileDetail < ApplicationRecord
   validate :correct_file_type
   serialize :word_count_map
+  before_create :parse_file
 
   attr_accessor :file, :no_blues_word_count_map, :no_blues_total_word_count, :spell_check_results
-
-  before_create :parse_file
 
   def check_spellings
     response = HTTParty.post('https://api.cognitive.microsoft.com/bing/v5.0/spellcheck/',
@@ -30,7 +29,6 @@ class FileDetail < ApplicationRecord
   end
 
   private
-
   def correct_file_type
     if file.content_type != "text/plain"
       errors[:file] << "must be a plain text file"
@@ -38,14 +36,20 @@ class FileDetail < ApplicationRecord
   end
 
   def parse_file
-    file_contents_array = file.read.gsub(/[^a-zA-Z\s-]/, '').split
+    file_contents_array = file.read.downcase.gsub(/[^a-zA-Z\s-]/, '').split
     self.total_word_count = file_contents_array.count
     self.word_count_map = map_word_counts(file_contents_array)
   end
 
   def map_word_counts(contents)
     word_counts = Hash.new(0)
-    contents.each { |word| word_counts[word] += 1 }
+    contents.each do |word|
+      if word == 'i'
+        word_counts["I"] += 1
+      else
+        word_counts[word] += 1
+      end
+    end
     word_counts
   end
 end
