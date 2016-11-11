@@ -10,7 +10,9 @@ gem 'puma', '~> 3.0'
 
 gem 'httparty'
 
-gem 'active_model_serializers', '~> 0.10.0'
+gem 'jbuilder'
+
+# gem 'active_model_serializers', '~> 0.10.0'
 
 gem 'figaro'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder

@@ -36,7 +36,7 @@ class FileDetail < ApplicationRecord
   end
 
   def parse_file
-    file_contents_array = file.read.downcase.gsub(/[^a-zA-Z\s-]/, '').split
+    file_contents_array = file.read.gsub(/[^a-zA-Z\s-]/, '').split
     self.total_word_count = file_contents_array.count
     self.word_count_map = map_word_counts(file_contents_array)
   end
@@ -44,10 +44,10 @@ class FileDetail < ApplicationRecord
   def map_word_counts(contents)
     word_counts = Hash.new(0)
     contents.each do |word|
-      if word == 'i'
+      if word == 'I'
         word_counts["I"] += 1
       else
-        word_counts[word] += 1
+        word_counts[word.downcase] += 1
       end
     end
     word_counts

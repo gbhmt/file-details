@@ -2,8 +2,6 @@ class Api::FileDetailsController < ApplicationController
 
   def index
     @file_details = FileDetail.all
-
-    render json: @file_details
   end
 
   def create
@@ -12,8 +10,7 @@ class Api::FileDetailsController < ApplicationController
     if @file_detail.save
       @file_detail.omit_blues if params[:no_blues] == 'true'
       @file_detail.check_spellings if params[:spell_check] == 'true'
-      debugger
-      render json: @file_detail, no_blues: params[:no_blues], spell_check: params[:spell_check]
+      render :show
     else
       render json: @file_detail.errors, status: 422
     end
