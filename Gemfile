@@ -10,13 +10,10 @@ gem 'puma', '~> 3.0'
 
 gem 'httparty'
 
-gem 'jbuilder'
-
-# gem 'active_model_serializers', '~> 0.10.0'
 
 gem 'figaro'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-# gem 'jbuilder', '~> 2.5'
+gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
@@ -33,6 +30,7 @@ group :development, :test do
   gem 'annotate'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+  gem 'rails-controller-testing'
 end
 
 group :development do

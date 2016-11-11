@@ -5,5 +5,6 @@ FactoryGirl.define do
   factory :file_detail do
     total_word_count 9
     word_count_map word_count_hash
+    to_create { |instance| instance.save(validate: false)}
   end
 end

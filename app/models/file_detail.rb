@@ -16,6 +16,14 @@ class FileDetail < ApplicationRecord
 
   attr_accessor :file, :no_blues_word_count_map, :no_blues_total_word_count, :spell_check_results
 
+  def self.create_with_params(file_param, options = {})
+    file_detail = FileDetail.create(file: file_param)
+    return file_detail unless file_detail.errors.empty?
+    file_detail.omit_blues if options[:no_blues] == 'true'
+    file_detail.check_spellings if options[:spell_check] == 'true'
+    file_detail
+  end
+
   def check_spellings
     response = HTTParty.post('https://api.cognitive.microsoft.com/bing/v5.0/spellcheck/',
       :query => { text: word_count_map.keys.join(" ") },
@@ -29,12 +37,6 @@ class FileDetail < ApplicationRecord
   end
 
   private
-  def correct_file_type
-    if file.content_type != "text/plain"
-      errors[:file] << "must be a plain text file"
-    end
-  end
-
   def parse_file
     file_contents_array = file.read.gsub(/[^a-zA-Z\s-]/, '').split
     self.total_word_count = file_contents_array.count
@@ -52,4 +54,11 @@ class FileDetail < ApplicationRecord
     end
     word_counts
   end
+
+  def correct_file_type
+    if file.content_type != "text/plain"
+      errors[:file] << "must be a plain text file"
+    end
+  end
+
 end

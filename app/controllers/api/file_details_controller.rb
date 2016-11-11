@@ -5,11 +5,9 @@ class Api::FileDetailsController < ApplicationController
   end
 
   def create
-    @file_detail = FileDetail.new(file: file_detail_params)
+    @file_detail = FileDetail.create_with_params(file_param, optional_params)
 
     if @file_detail.save
-      @file_detail.omit_blues if params[:no_blues] == 'true'
-      @file_detail.check_spellings if params[:spell_check] == 'true'
       render :show
     else
       render json: @file_detail.errors, status: 422
@@ -17,8 +15,12 @@ class Api::FileDetailsController < ApplicationController
   end
 
   private
-  def file_detail_params
+  def file_param
     params.require(:file)
+  end
+
+  def optional_params
+    params.permit(:no_blues, :spell_check)
   end
 
 end
