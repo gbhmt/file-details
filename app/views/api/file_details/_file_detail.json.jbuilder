@@ -1,4 +1,4 @@
-json.id :id
+json.id file_detail.id
 json.type 'file_detail'
 json.attributes do
   if params[:no_blues] == 'true'

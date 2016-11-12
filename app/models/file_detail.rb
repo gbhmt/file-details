@@ -25,8 +25,9 @@ class FileDetail < ApplicationRecord
   end
 
   def check_spellings
+    word_map = no_blues_word_count_map ? no_blues_word_count_map : word_count_map
     response = HTTParty.post('https://api.cognitive.microsoft.com/bing/v5.0/spellcheck/',
-      :query => { text: word_count_map.keys.join(" ") },
+      :query => { text: word_map.keys.join(" ") },
       :headers => { "Ocp-Apim-Subscription-Key" => ENV["spell_check_api_key"] })
     self.spell_check_results = response.parsed_response["flaggedTokens"].map { |el| el["token"] }
   end
